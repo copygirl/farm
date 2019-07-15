@@ -1,0 +1,6 @@
+(
+  title: "Farm Game",
+  dimensions: Some((1280, 720)),
+  decorations: true,
+  resizable: true,
+)

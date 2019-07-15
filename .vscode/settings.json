@@ -1,0 +1,11 @@
+{
+  "editor.insertSpaces": true,
+
+  "[rust]": {
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+  },
+
+  "[ron]": { "editor.tabSize": 2, },
+  "[json]": { "editor.tabSize": 2, },
+}
