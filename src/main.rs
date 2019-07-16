@@ -4,7 +4,7 @@ use amethyst::{
     ecs::prelude::{ReadExpect, Resources, SystemData},
     prelude::*,
     renderer::{
-        pass::DrawShadedDesc,
+        pass::DrawFlat2DDesc,
         rendy::{
             factory::Factory,
             graph::{
@@ -85,14 +85,12 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
 
         self.dirty = false;
         let window = <ReadExpect<'_, Window>>::fetch(res);
-        let surface = factory.create_surface(&window);
-        // cache surface format to speed things up
-        let surface_format = *self
-            .surface_format
-            .get_or_insert_with(|| factory.get_surface_format(&surface));
         let dimensions = self.dimensions.as_ref().unwrap();
-        let window_kind =
-            image::Kind::D2(dimensions.width() as u32, dimensions.height() as u32, 1, 1);
+        let window_kind = image::Kind::D2(dimensions.width() as u32, dimensions.height() as u32, 1, 1);
+
+        let surface = factory.create_surface(&window);
+        let surface_format = *self.surface_format
+            .get_or_insert_with(|| factory.get_surface_format(&surface));
 
         let mut graph_builder = GraphBuilder::new();
         let color = graph_builder.create_image(
@@ -111,7 +109,7 @@ impl GraphCreator<DefaultBackend> for RenderingGraph {
 
         let opaque = graph_builder.add_node(
             SubpassBuilder::new()
-                .with_group(DrawShadedDesc::new().builder())
+                .with_group(DrawFlat2DDesc::new().builder())
                 .with_color(color)
                 .with_depth_stencil(depth)
                 .into_pass(),
