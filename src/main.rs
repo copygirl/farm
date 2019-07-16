@@ -1,4 +1,5 @@
 use amethyst::{
+    assets::Processor,
     core::transform::TransformBundle,
     ecs::prelude::{ReadExpect, Resources, SystemData},
     prelude::*,
@@ -13,17 +14,17 @@ use amethyst::{
             hal::{format::Format, image},
         },
         types::DefaultBackend,
-        GraphCreator, RenderingSystem,
+        GraphCreator, RenderingSystem, SpriteSheet,
     },
     utils::application_root_dir,
     window::{ScreenDimensions, Window, WindowBundle},
 };
 
-struct MyState;
+mod camera;
+mod farm;
 
-impl SimpleState for MyState {
-    fn on_start(&mut self, _data: StateData<'_, GameData<'_, '_>>) {}
-}
+use crate::camera::CameraSystem;
+use crate::farm::MainState;
 
 const BACKGROUND_COLOR: [f32; 4] = [0.2, 0.4, 0.1, 1.0];
 
@@ -38,11 +39,14 @@ fn main() -> amethyst::Result<()> {
     let game_data = GameDataBuilder::default()
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
         .with_bundle(TransformBundle::new())?
-        .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
-            RenderingGraph::default(),
-        ));
 
-    let mut game = Application::new(assets_dir, MyState, game_data)?;
+        .with(Processor::<SpriteSheet>::new(), "sprite_sheet_processor", &[])
+
+        .with(CameraSystem::default(), "camera_system", &[])
+
+        .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(RenderingGraph::default()));
+
+    let mut game = Application::new(assets_dir, MainState, game_data)?;
     game.run();
 
     Ok(())

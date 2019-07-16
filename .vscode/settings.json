@@ -1,11 +1,8 @@
 {
   "editor.insertSpaces": true,
+  "editor.trimAutoWhitespace": true,
 
-  "[rust]": {
-    "editor.tabSize": 4,
-    "editor.formatOnSave": true,
-  },
-
+  "[rust]": { "editor.tabSize": 4, },
   "[ron]": { "editor.tabSize": 2, },
   "[json]": { "editor.tabSize": 2, },
 }
