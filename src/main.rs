@@ -2,6 +2,7 @@ use amethyst::{
     assets::Processor,
     core::transform::TransformBundle,
     ecs::prelude::{ReadExpect, Resources, SystemData},
+    input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
         pass::DrawFlat2DDesc,
@@ -21,10 +22,14 @@ use amethyst::{
 };
 
 mod camera;
+mod controls;
 mod farm;
+mod movement;
 
 use crate::camera::CameraSystem;
+use crate::controls::ControlsSystem;
 use crate::farm::MainState;
+use crate::movement::MovementSystem;
 
 const BACKGROUND_COLOR: [f32; 4] = [0.2, 0.4, 0.1, 1.0];
 
@@ -35,14 +40,18 @@ fn main() -> amethyst::Result<()> {
     let assets_dir = app_root.join("assets");
     let config_dir = app_root.join("config");
     let display_config_path = config_dir.join("display.ron");
+    let bindings_config_path = config_dir.join("bindings.ron");
 
     let game_data = GameDataBuilder::default()
         .with_bundle(WindowBundle::from_config_path(display_config_path))?
+        .with_bundle(InputBundle::<StringBindings>::new().with_bindings_from_file(bindings_config_path)?)?
         .with_bundle(TransformBundle::new())?
 
         .with(Processor::<SpriteSheet>::new(), "sprite_sheet_processor", &[])
 
         .with(CameraSystem::default(), "camera_system", &[])
+        .with(ControlsSystem::default(), "controls_system", &[])
+        .with(MovementSystem::default(), "movement_system", &[])
 
         .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(RenderingGraph::default()));
 

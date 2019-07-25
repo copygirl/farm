@@ -9,21 +9,26 @@ use amethyst::{
     },
 };
 
+use crate::movement::CellPos;
+use crate::controls::Player;
+
 pub struct MainState;
 
 impl SimpleState for MainState {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        let texture = load_texture(world, "textures/spritesheet.png");
-        let sprite_sheet = load_sprite_sheet_from_grid(world, texture, 128, 128, 8, 8);
+        let texture = load_texture(world, "textures/character.png");
+        let sprite_sheet = load_sprite_sheet_from_grid(world, texture, 64, 64, 4, 4);
 
         world
             .create_entity()
+            .with(CellPos::default())
+            .with(Player::default())
             .with(Transform::default())
             .with(SpriteRender {
                 sprite_sheet: sprite_sheet,
-                sprite_number: 16,
+                sprite_number: 0,
             })
             .build();
     }
