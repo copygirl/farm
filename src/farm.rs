@@ -2,14 +2,13 @@ use amethyst::{
     assets::{AssetStorage, Loader, Handle},
     core::transform::Transform,
     prelude::*,
-    winit::{Event, KeyboardInput, VirtualKeyCode, WindowEvent},
     renderer::{
         sprite::SpriteGrid,
         ImageFormat, SpriteRender, SpriteSheet, Texture
     },
 };
 
-use crate::movement::CellPos;
+use crate::components::Position;
 use crate::controls::Player;
 
 pub struct MainState;
@@ -23,8 +22,8 @@ impl SimpleState for MainState {
 
         world
             .create_entity()
-            .with(CellPos::default())
             .with(Player::default())
+            .with(Position::default())
             .with(Transform::default())
             .with(SpriteRender {
                 sprite_sheet: sprite_sheet,
@@ -38,6 +37,7 @@ impl SimpleState for MainState {
         _data: StateData<'_, GameData<'_, '_>>,
         event: StateEvent,
     ) -> SimpleTrans {
+        use amethyst::winit::{Event, KeyboardInput, VirtualKeyCode, WindowEvent};
         match event {
             StateEvent::Window(event) => match event {
                 Event::WindowEvent { event, .. } => match event {
@@ -50,11 +50,11 @@ impl SimpleState for MainState {
                     // .. or the window was requested to be closed.
                     | WindowEvent::CloseRequested => Trans::Quit,
 
-                    _ => Trans::None,
+                    _ => Trans::None
                 },
-                _ => Trans::None,
+                _ => Trans::None
             },
-            _ => Trans::None,
+            _ => Trans::None
         }
     }
 }

@@ -16,7 +16,7 @@ use amethyst::{
     window::{ScreenDimensions, Window},
 };
 
-// Window background color
+// Window background color.
 static BACKGROUND_COLOR: [f32; 4] = [0.2, 0.4, 0.1, 1.0];
 
 #[derive(Default)]
@@ -29,7 +29,7 @@ impl GraphCreator<DefaultBackend> for RenderGraph {
     fn rebuild(&mut self, res: &Resources) -> bool {
         use std::ops::Deref;
 
-        // Only rebuild when dimensions have changed
+        // Only rebuild when dimensions have changed.
         let new_dimensions = res.try_fetch::<ScreenDimensions>();
         let new_dimensions = new_dimensions.as_ref().map(|d| d.deref());
 
@@ -52,8 +52,8 @@ impl GraphCreator<DefaultBackend> for RenderGraph {
             hal::command::{ClearDepthStencil, ClearValue},
         };
 
-        // Since we're freshly building the graph, it will never
-        // be dirty after this function is called.
+        // Since we're freshly building the graph, it will
+        // never be dirty after this function is called.
         self.dirty = false;
 
         let window = <ReadExpect<'_, Window>>::fetch(res);
@@ -67,15 +67,15 @@ impl GraphCreator<DefaultBackend> for RenderGraph {
         let clear_color = ClearValue::Color(BACKGROUND_COLOR.into());
         let clear_depth = ClearValue::DepthStencil(ClearDepthStencil(1.0, 0));
 
-        // Build the RenderGraph
+        // Build the RenderGraph.
         let mut builder = GraphBuilder::new();
         let color = builder.create_image(window_kind, 1, surface_format, Some(clear_color));
         let depth = builder.create_image(window_kind, 1, Format::D32Sfloat, Some(clear_depth));
 
-        // Add additional draw groups here for things like UI
+        // Add additional draw groups here for things like UI.
         let opaque = builder.add_node(
             SubpassBuilder::new()
-                // Draw sprites with flat subpass
+                // Draw sprites with flat subpass.
                 .with_group(DrawFlat2DDesc::new().builder())
                 .with_color(color)
                 .with_depth_stencil(depth)
@@ -84,14 +84,14 @@ impl GraphCreator<DefaultBackend> for RenderGraph {
 
         let transparent = builder.add_node(
             SubpassBuilder::new()
-                // Draw sprites with transparency
+                // Draw sprites with transparency.
                 .with_group(DrawFlat2DTransparentDesc::new().builder())
                 .with_color(color)
                 .with_depth_stencil(depth)
                 .into_pass(),
         );
 
-        // Render the result to the surface
+        // Render the result to the surface.
         let _present = builder.add_node(
             PresentNode::builder(factory, surface, color)
                 .with_dependency(opaque)

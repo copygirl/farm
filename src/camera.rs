@@ -28,7 +28,7 @@ impl<'s> System<'s> for CameraSystem {
                 .build()
         });
 
-        let zoom = (dimensions.width().min(dimensions.height()) / 200.0).floor().max(1.0);
+        let zoom = (dimensions.width().min(dimensions.height()) / 200.0).ceil();
         let width = dimensions.width() / zoom;
         let height = dimensions.height() / zoom;
         cameras.insert(*entity, Camera::standard_2d(width, height)).unwrap();

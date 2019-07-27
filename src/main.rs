@@ -13,6 +13,7 @@ use amethyst::{
 };
 
 mod camera;
+mod components;
 mod controls;
 mod farm;
 mod movement;
